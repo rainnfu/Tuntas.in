@@ -28,13 +28,13 @@
                                 
                                 @if($project->owner_id === Auth::id())
                                     <div class="flex space-x-2">
-                                        <a href="{{ route('projects.edit', $project) }}" class="text-gray-400 hover:text-blue-500">
+                                        <a href="{{ route('projects.edit', $project) }}" class="text-gray-400 hover:text-blue-500" title="Edit Proyek">
                                             ✏️
                                         </a>
                                         <form action="{{ route('projects.destroy', $project) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus proyek ini? Semua tugas akan hilang permanen.');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-gray-400 hover:text-red-500">
+                                            <button type="submit" class="text-gray-400 hover:text-red-500" title="Hapus Proyek">
                                                 🗑️
                                             </button>
                                         </form>
@@ -54,8 +54,13 @@
                             </div>
                         </div>
                     </div>
-                @endforelse
-            </div>
+                @empty
+                    <div class="col-span-3 text-center py-10 bg-white rounded-lg shadow-sm">
+                        <p class="text-gray-500 mb-4">Anda belum memiliki proyek.</p>
+                        <a href="{{ route('projects.create') }}" class="text-blue-500 underline">Buat proyek pertama Anda</a>
+                    </div>
+                @endforelse </div>
         </div>
     </div>
 </x-app-layout>
+
