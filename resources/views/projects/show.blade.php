@@ -296,4 +296,4 @@
             }
         </script>
     @endpush
-</x-app-layout>
+</x-app-layout> 
