@@ -77,11 +77,12 @@ class TaskController extends Controller
         $request->validate([
             'description' => 'nullable|string',
             'due_date'    => 'nullable|date',
+            'priority'    => 'nullable|string|in:low,medium,high,urgent', 
         ]);
         
-        $task->update($request->only('description', 'due_date'));
+        $task->update($request->only('description', 'due_date', 'priority'));
 
-        return response()->json(['message' => 'Deskripsi diperbarui']);
+        return response()->json(['message' => 'Task diperbarui']);
     }
 
     // Method untuk Assign Member ke Tugas
@@ -91,6 +92,21 @@ class TaskController extends Controller
         'user_id' => 'required|exists:users,id'
     ]);
 
+    $wasAssigned = $task->assignees()->where('user_id', $request->user_id)->exists();
+
+    // Ambil data user yang ditugaskan
+        $targetUser = \App\Models\User::find($request->user_id);
+        $isNowAssigned = !$wasAssigned; // Kebalikan dari status awal
+
+        // LOG ACTIVITY (Hanya jika Assign, Unassign opsional)
+        if ($isNowAssigned) {
+            \App\Models\ActivityLog::create([
+                'project_id'  => $task->list->project_id,
+                'user_id'     => auth()->id(), // Siapa yang melakukan aksi (Admin)
+                'action'      => 'assign',
+                'description' => auth()->user()->name . " menugaskan {$targetUser->name} ke '{$task->title}'",
+            ]);
+        }
     // Toggle: Kalau belum ada -> pasang. Kalau sudah ada -> copot.
     $task->assignees()->toggle($request->user_id);
 
@@ -98,11 +114,10 @@ class TaskController extends Controller
     $user = \App\Models\User::find($request->user_id);
 
     return response()->json([
-        'message' => 'Assignee updated',
-        'user' => $user,
-        // Kirim balik status apakah sekarang dia ditugaskan atau tidak
-        'attached' => $task->assignees->contains($request->user_id) 
-    ]);
+            'message' => 'Assignee updated',
+            'user' => $targetUser,
+            'attached' => $isNowAssigned
+        ]);
  
     }
     // Hapus Tugas
@@ -113,5 +128,38 @@ class TaskController extends Controller
         $task->delete();
 
         return response()->json(['message' => 'Tugas berhasil dihapus']);
+    }
+
+    // Method Baru: Tambah Tugas dari Tombol Global
+    public function storeGlobal(Request $request, \App\Models\Project $project)
+    {
+        // Pastikan User adalah Owner
+        if ($project->owner_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $request->validate([
+            'title'           => 'required|string|max:255',
+            'project_list_id' => 'required|exists:project_lists,id', // User pilih list
+            'priority'        => 'required|in:low,medium,high,urgent',
+            'due_date'        => 'nullable|date',
+        ]);
+
+        $task = \App\Models\Task::create([
+            'title'           => $request->title,
+            'project_list_id' => $request->project_list_id,
+            'priority'        => $request->priority,
+            'due_date'        => $request->due_date,
+        ]);
+
+        // LOG CREATE
+        \App\Models\ActivityLog::create([
+            'project_id'  => $project->id,
+            'user_id'     => auth()->id(),
+            'action'      => 'create',
+            'description' => auth()->user()->name . " membuat tugas baru: '{$task->title}'",
+        ]);
+
+        return back()->with('success', 'Tugas berhasil dibuat!');
     }
 }

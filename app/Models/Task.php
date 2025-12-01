@@ -9,12 +9,12 @@ class Task extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'due_date', 'project_list_id'];
+    protected $fillable = ['title', 'description', 'due_date', 'project_list_id', 'priority'];
     
     protected $casts = [
         'due_date' => 'datetime', // Agar otomatis jadi objek Carbon (Bisa dicek isPast, diffForHumans, dll)
     ];
-    
+
     // Relasi: Task berada di satu List
     public function list()
     {

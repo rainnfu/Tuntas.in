@@ -13,16 +13,22 @@ class ProjectController extends Controller
     {
         $user = Auth::user();
         
-        // 1. Ambil proyek yang dibuat sendiri (Owner)
+        // 1. Ambil semua proyek (Owned + Member)
         $ownedProjects = $user->ownedProjects;
+        $memberProjects = $user->projects;
+        $allProjects = $ownedProjects->merge($memberProjects);
 
-        // 2. Ambil proyek yang diikuti sebagai anggota (Member)
-        // Kita gunakan relasi 'projects' yang sudah didefinisikan di Model User
-        $memberProjects = $user->projects; 
+        // 2. Ambil urutan custom user
+        $order = $user->project_order ?? [];
 
-        // 3. Gabungkan keduanya menjadi satu koleksi
-        $projects = $ownedProjects->merge($memberProjects)->sortByDesc('updated_at');
-        
+        // 3. Sortir Proyek berdasarkan urutan tersebut
+        $projects = $allProjects->sortBy(function($model) use ($order) {
+            // Cari posisi ID di array order
+            $key = array_search($model->id, $order);
+            // Jika ketemu, pakai indexnya. Jika tidak (proyek baru), taruh di paling belakang (9999)
+            return $key !== false ? $key : 999999 + $model->id;
+        });
+
         return view('dashboard', compact('projects'));
     }
 
@@ -128,20 +134,34 @@ class ProjectController extends Controller
 
         // Ambil 50 log terakhir
         $logs = \App\Models\ActivityLog::where('project_id', $project->id)
-                    ->with('user') // Eager load user
+                    ->with('user')
                     ->latest()
                     ->take(50)
                     ->get()
                     ->map(function ($log) {
                         return [
+                            'id' => $log->id, // PENTING: Tambahkan ID unik untuk Key AlpineJS
                             'user_name' => $log->user->name,
-                            'avatar_url' => $log->user->avatar_url, // Pakai accessor yang dibuat B
+                            'avatar_url' => $log->user->avatar_url, 
                             'description' => $log->description,
-                            'created_at' => $log->created_at->diffForHumans(),
+                            'created_at' => $log->created_at->diffForHumans(), // Format "2 minutes ago"
                             'action' => $log->action
                         ];
                     });
 
         return response()->json($logs);
+    }
+
+    // Method untuk menyimpan urutan baru
+    public function reorder(Request $request)
+    {
+        $request->validate([
+            'order' => 'required|array', // Array berisi ID project
+        ]);
+
+        $user = Auth::user();
+        $user->update(['project_order' => $request->order]);
+
+        return response()->json(['message' => 'Urutan tersimpan']);
     }
 }

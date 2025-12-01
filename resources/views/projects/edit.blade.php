@@ -23,8 +23,8 @@
                         </div>
                         <div class="mb-4">
                             <x-input-label for="deadline" :value="__('Target Selesai (Deadline)')" />
-                            <input type="date" id="deadline" name="deadline" 
-                                value="{{ old('deadline', $project->deadline ? $project->deadline->format('Y-m-d') : '') }}"
+                            <input type="datetime-local" id="deadline" name="deadline" 
+                                value="{{ old('deadline', $project->deadline ? $project->deadline->format('Y-m-d\TH:i') : '') }}"
                                 class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                         </div>
 

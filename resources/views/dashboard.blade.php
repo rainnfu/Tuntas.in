@@ -1,156 +1,209 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div>
-                <h2 class="font-bold text-2xl text-gray-800 leading-tight">
-                    Dashboard {{ config('app.name') }}
-                </h2>
-                <p class="text-sm text-gray-500 mt-1">
-                    Selamat datang kembali, <span class="text-blue-600 font-bold">{{ Auth::user()->name }}</span>!
-                </p>
-            </div>
-            <a href="{{ route('projects.create') }}" 
-               class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105 flex items-center gap-2">
-                <i class="fas fa-plus"></i> Buat Proyek
-            </a>
-        </div>
-    </x-slot>
+    <div x-data="dashboardBoard()" class="min-h-screen bg-[#F2F4F3] font-sans text-[#344E41]">
+        
+        <div class="bg-white border-b border-[#A3B18A]/20 px-4 sm:px-8 py-8 shadow-[0_4px_20px_-10px_rgba(88,129,87,0.1)]">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end gap-6">
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="h-8 w-1 bg-[#588157] rounded-full"></div>
+                        <h2 class="text-xs font-bold text-[#A3B18A] uppercase tracking-[0.2em]">Workspace</h2>
+                    </div>
+                    <h1 class="text-4xl font-bold text-[#344E41] tracking-tight">
+                        Dashboard
+                    </h1>
+                    <p class="text-[#5F6F65] mt-2 font-medium flex items-center gap-2">
+                        <i class="far fa-calendar text-[#588157]"></i> 
+                        {{ now()->format('l, d F Y') }}
+                        <span class="w-1 h-1 rounded-full bg-[#A3B18A]"></span>
+                        <span class="text-sm">Fokus pada prioritas hari ini.</span>
+                    </p>
+                </div>
 
-    <div class="py-12 bg-gray-50 min-h-screen">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <a href="{{ route('projects.create') }}" 
+                   class="group flex items-center gap-3 bg-[#344E41] hover:bg-[#2A3E34] text-white pl-5 pr-6 py-3.5 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+                    <i class="fas fa-plus bg-[#588157] p-1.5 rounded-lg text-xs group-hover:rotate-90 transition-transform"></i>
+                    <span class="font-bold tracking-wide">Proyek Baru</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
             
             @if(session('success'))
-                <div class="mb-6 bg-green-50 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-sm flex items-center justify-between animate-fade-in-down">
-                    <div class="flex items-center gap-3">
-                        <div class="bg-green-100 p-2 rounded-full">
-                            <i class="fas fa-check text-green-600"></i>
-                        </div>
-                        <span class="font-medium">{{ session('success') }}</span>
+                <div class="mb-8 flex items-center gap-4 bg-[#588157] text-white p-4 rounded-xl shadow-lg animate-fade-in-down">
+                    <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-check"></i>
                     </div>
-                    <button onclick="this.parentElement.remove()" class="text-green-500 hover:text-green-700">&times;</button>
+                    <p class="font-medium">{{ session('success') }}</p>
+                    <button onclick="this.parentElement.remove()" class="ml-auto text-white/70 hover:text-white"><i class="fas fa-times"></i></button>
                 </div>
             @endif
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                <div class="bg-white overflow-hidden shadow-sm rounded-xl p-6 border border-gray-100 flex items-center gap-4 hover:shadow-md transition">
-                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-xl">
-                        <i class="fas fa-layer-group"></i>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div class="bg-white p-5 rounded-2xl border border-[#DAD7CD] shadow-sm flex items-center gap-5 relative overflow-hidden group">
+                    <div class="absolute right-0 top-0 w-24 h-24 bg-[#A3B18A]/10 rounded-bl-[4rem] transition-transform group-hover:scale-110"></div>
+                    <div class="w-12 h-12 bg-[#F2F4F3] text-[#344E41] rounded-xl flex items-center justify-center text-xl shadow-inner">
+                        <i class="fas fa-th-large"></i>
                     </div>
                     <div>
-                        <div class="text-xs text-gray-400 font-bold uppercase tracking-wider">Total Proyek</div>
-                        <div class="text-2xl font-black text-gray-800">{{ $projects->count() }}</div>
+                        <p class="text-xs font-bold text-[#A3B18A] uppercase tracking-wider">Total Proyek</p>
+                        <p class="text-3xl font-black text-[#344E41]">{{ $projects->count() }}</p>
                     </div>
                 </div>
-                
-                <div class="bg-white overflow-hidden shadow-sm rounded-xl p-6 border border-gray-100 flex items-center gap-4 hover:shadow-md transition">
-                    <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 text-xl">
-                        <i class="fas fa-user-shield"></i>
+                <div class="bg-white p-5 rounded-2xl border border-[#DAD7CD] shadow-sm flex items-center gap-5 relative overflow-hidden group">
+                    <div class="absolute right-0 top-0 w-24 h-24 bg-[#588157]/10 rounded-bl-[4rem] transition-transform group-hover:scale-110"></div>
+                    <div class="w-12 h-12 bg-[#F2F4F3] text-[#588157] rounded-xl flex items-center justify-center text-xl shadow-inner">
+                        <i class="fas fa-user-astronaut"></i>
                     </div>
                     <div>
-                        <div class="text-xs text-gray-400 font-bold uppercase tracking-wider">Milik Saya</div>
-                        <div class="text-2xl font-black text-gray-800">{{ Auth::user()->ownedProjects->count() }}</div>
+                        <p class="text-xs font-bold text-[#A3B18A] uppercase tracking-wider">Milik Saya</p>
+                        <p class="text-3xl font-black text-[#344E41]">{{ Auth::user()->ownedProjects->count() }}</p>
                     </div>
                 </div>
-
-                <div class="bg-white overflow-hidden shadow-sm rounded-xl p-6 border border-gray-100 flex items-center gap-4 hover:shadow-md transition">
-                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 text-xl">
-                        <i class="fas fa-users"></i>
+                <div class="bg-white p-5 rounded-2xl border border-[#DAD7CD] shadow-sm flex items-center gap-5 relative overflow-hidden group">
+                    <div class="absolute right-0 top-0 w-24 h-24 bg-orange-100 rounded-bl-[4rem] transition-transform group-hover:scale-110"></div>
+                    <div class="w-12 h-12 bg-[#F2F4F3] text-orange-600 rounded-xl flex items-center justify-center text-xl shadow-inner">
+                        <i class="fas fa-hands-helping"></i>
                     </div>
                     <div>
-                        <div class="text-xs text-gray-400 font-bold uppercase tracking-wider">Kolaborasi</div>
-                        <div class="text-2xl font-black text-gray-800">{{ Auth::user()->projects->count() }}</div>
+                        <p class="text-xs font-bold text-[#A3B18A] uppercase tracking-wider">Kolaborasi</p>
+                        <p class="text-3xl font-black text-[#344E41]">{{ Auth::user()->projects->count() }}</p>
                     </div>
                 </div>
             </div>
 
-            <div class="flex items-center justify-between mb-6 px-1">
-                <h3 class="text-lg font-bold text-gray-700">Daftar Proyek Aktif</h3>
-                <span class="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">{{ $projects->count() }} Projects</span>
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="font-bold text-xl text-[#344E41]">Project List</h3>
+                <span class="text-xs font-medium text-[#A3B18A] bg-white px-3 py-1.5 rounded-full border border-[#DAD7CD] shadow-sm">
+                    <i class="fas fa-sort mr-1"></i> Drag to Reorder
+                </span>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div id="project-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
                 @forelse ($projects as $project)
-                    <div class="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 flex flex-col h-full relative group transform hover:-translate-y-1">
+                    <div class="project-card bg-white rounded-2xl border border-[#DAD7CD] hover:border-[#588157] shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_24px_rgba(88,129,87,0.15)] transition-all duration-300 relative group flex flex-col h-full"
+                         data-id="{{ $project->id }}">
                         
+                        <div class="drag-handle absolute top-4 right-4 text-[#A3B18A] hover:text-[#344E41] cursor-move p-2 rounded-lg hover:bg-[#F2F4F3] transition z-20">
+                            <i class="fas fa-grip-vertical"></i>
+                        </div>
+
                         @if($project->owner_id === Auth::id())
-                            <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1 bg-white p-1 rounded-lg shadow-sm z-10 border border-gray-100">
-                                <a href="{{ route('projects.edit', $project) }}" class="text-gray-400 hover:text-blue-500 p-2 rounded-md hover:bg-blue-50 transition" title="Edit Proyek">
-                                    <i class="fas fa-pen text-sm"></i>
+                            <div class="absolute top-4 right-12 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20">
+                                <a href="{{ route('projects.edit', $project) }}" class="w-8 h-8 flex items-center justify-center rounded-lg bg-[#F2F4F3] text-[#588157] hover:bg-[#588157] hover:text-white transition" title="Edit">
+                                    <i class="fas fa-pen text-xs"></i>
                                 </a>
-                                <form action="{{ route('projects.destroy', $project) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus proyek ini? Semua tugas akan hilang.');">
+                                <form action="{{ route('projects.destroy', $project) }}" method="POST" onsubmit="return confirm('Hapus proyek?');">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="text-gray-400 hover:text-red-500 p-2 rounded-md hover:bg-red-50 transition" title="Hapus Proyek">
-                                        <i class="fas fa-trash text-sm"></i>
+                                    <button type="submit" class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition" title="Hapus">
+                                        <i class="fas fa-trash text-xs"></i>
                                     </button>
                                 </form>
                             </div>
                         @endif
 
-                        <div class="p-6 flex-1 cursor-pointer" onclick="window.location='{{ route('projects.show', $project) }}'">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                        <div class="p-6 flex-1 cursor-pointer" onclick="if(!this.closest('.project-card').classList.contains('cursor-move')) window.location='{{ route('projects.show', $project) }}'">
+                            
+                            <div class="flex items-start gap-4 mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-[#344E41] flex items-center justify-center text-white text-lg font-bold shadow-md group-hover:bg-[#588157] transition-colors">
                                     {{ substr($project->name, 0, 1) }}
                                 </div>
                                 <div>
                                     @if($project->owner_id === Auth::id())
-                                        <span class="bg-blue-50 text-blue-700 text-[10px] px-2 py-1 rounded-md font-bold uppercase tracking-wide border border-blue-100">Owner</span>
+                                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[#588157]/10 text-[#588157] mb-1">
+                                            Owner
+                                        </span>
                                     @else
-                                        <span class="bg-orange-50 text-orange-700 text-[10px] px-2 py-1 rounded-md font-bold uppercase tracking-wide border border-orange-100">Member</span>
+                                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-orange-100 text-orange-700 mb-1">
+                                            Team
+                                        </span>
                                     @endif
-                                    
-                                    <div class="text-xs text-gray-400 mt-1 flex items-center gap-1">
-                                        <i class="fas fa-user-circle"></i> {{ Str::limit($project->owner->name, 15) }}
-                                    </div>
+                                    <h3 class="text-lg font-bold text-[#344E41] leading-tight line-clamp-1 group-hover:text-[#588157] transition-colors">
+                                        {{ $project->name }}
+                                    </h3>
                                 </div>
                             </div>
 
-                            <h4 class="text-lg font-bold text-gray-800 mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors">
-                                {{ $project->name }}
-                            </h4>
-                            <p class="text-gray-500 text-sm line-clamp-2 leading-relaxed h-10">
-                                {{ $project->description ?? 'Tidak ada deskripsi tambahan untuk proyek ini.' }}
+                            <p class="text-sm text-[#5F6F65] leading-relaxed line-clamp-2 h-10 mb-4">
+                                {{ $project->description ?? 'Tidak ada deskripsi.' }}
                             </p>
-                        </div>
 
-                        <div class="bg-gray-50 px-6 py-4 border-t border-gray-100 rounded-b-xl flex justify-between items-center">
-                            
-                            <div class="text-xs font-medium flex items-center gap-2">
-                                @if($project->deadline)
-                                    @php
-                                        $isOverdue = $project->deadline->isPast();
-                                        $daysLeft = now()->diffInDays($project->deadline, false);
-                                    @endphp
+                            <div class="h-px w-full bg-gradient-to-r from-transparent via-[#DAD7CD] to-transparent mb-4"></div>
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <img src="{{ $project->owner->avatar_url }}" class="w-6 h-6 rounded-full border border-white shadow-sm" title="Owner">
                                     
-                                    <span class="{{ $isOverdue ? 'text-red-600 bg-red-50 px-2 py-1 rounded border border-red-100' : 'text-green-600 bg-green-50 px-2 py-1 rounded border border-green-100' }}">
-                                        <i class="far fa-flag mr-1"></i>
-                                        {{ $isOverdue ? 'Telat ' . abs((int)$daysLeft) . ' hari' : $daysLeft . ' hari lagi' }}
-                                    </span>
-                                @else
-                                    <span class="text-gray-400 flex items-center gap-1">
-                                        <i class="far fa-calendar"></i> Tanpa Deadline
-                                    </span>
-                                @endif
-                            </div>
+                                    <div class="text-xs font-medium">
+                                        @if($project->deadline)
+                                            @php
+                                                $isOverdue = $project->deadline->isPast();
+                                                $timeLeft = $project->deadline->diffForHumans(null, true);
+                                            @endphp
+                                            <div class="flex flex-col">
+                                                <span class="{{ $isOverdue ? 'text-red-500' : 'text-[#588157]' }} font-bold flex items-center gap-1">
+                                                    <i class="far {{ $isOverdue ? 'fa-bell' : 'fa-clock' }}"></i>
+                                                    {{ $isOverdue ? 'Telat ' . $timeLeft : $timeLeft . ' lagi' }}
+                                                </span>
+                                                <span class="text-[#A3B18A] text-[10px] mt-0.5 pl-4">
+                                                    {{ $project->deadline->format('d M, H:i') }} WIB
+                                                </span>
+                                            </div>
+                                        @else
+                                            <span class="text-[#A3B18A] italic">-- : --</span>
+                                        @endif
+                                    </div>
+                                </div>
 
-                            <a href="{{ route('projects.show', $project) }}" class="text-sm font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-all group-hover:translate-x-1">
-                                Buka <i class="fas fa-arrow-right text-xs"></i>
-                            </a>
+                                <div class="w-8 h-8 rounded-full bg-[#F2F4F3] flex items-center justify-center text-[#588157] group-hover:bg-[#588157] group-hover:text-white transition-all transform group-hover:translate-x-1">
+                                    <i class="fas fa-chevron-right text-xs"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 @empty
-                    <div class="col-span-full bg-white rounded-xl border-2 border-dashed border-gray-300 p-12 text-center hover:border-blue-400 transition cursor-pointer group" onclick="window.location='{{ route('projects.create') }}'">
-                        <div class="w-20 h-20 bg-gray-50 text-gray-300 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl group-hover:bg-blue-50 group-hover:text-blue-500 transition duration-300">
-                            <i class="fas fa-folder-plus"></i>
+                    <div class="col-span-full border-2 border-dashed border-[#DAD7CD] rounded-3xl p-12 text-center hover:border-[#588157] transition cursor-pointer bg-[#FDFCF8]" 
+                         onclick="window.location='{{ route('projects.create') }}'">
+                        <div class="w-16 h-16 bg-[#F2F4F3] rounded-full flex items-center justify-center mx-auto mb-4 text-2xl text-[#A3B18A]">
+                            <i class="fas fa-plus"></i>
                         </div>
-                        <h3 class="text-lg font-bold text-gray-900 mb-1">Belum ada proyek</h3>
-                        <p class="text-gray-500 mb-6 max-w-sm mx-auto">Proyek Anda akan muncul di sini. Mulai kelola tugas dengan membuat proyek baru.</p>
-                        <span class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 shadow-md">
-                            Buat Proyek Pertama
-                        </span>
+                        <h3 class="text-lg font-bold text-[#344E41]">Mulai Proyek Pertama</h3>
+                        <p class="text-sm text-[#5F6F65] mt-1">Atur jadwal dan tugas tim dengan mudah.</p>
                     </div>
                 @endforelse
             </div>
-
         </div>
     </div>
+
+    @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+        <script>
+            function dashboardBoard() {
+                return {
+                    init() {
+                        const el = document.getElementById('project-grid');
+                        if(el) {
+                            new Sortable(el, {
+                                animation: 200,
+                                ghostClass: 'opacity-50',
+                                handle: '.drag-handle',
+                                onEnd: () => { this.saveOrder(); }
+                            });
+                        }
+                    },
+                    saveOrder() {
+                        const order = Array.from(document.querySelectorAll('.project-card')).map(el => el.getAttribute('data-id'));
+                        fetch('{{ route("projects.reorder") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            body: JSON.stringify({ order: order })
+                        });
+                    }
+                }
+            }
+        </script>
+    @endpush
 </x-app-layout>

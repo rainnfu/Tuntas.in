@@ -12,7 +12,7 @@ class Project extends Model
     protected $fillable = ['name', 'description', 'owner_id', 'deadline'];
 
     protected $casts = [
-        'deadline' => 'date',
+        'deadline' => 'datetime',
     ];
 
     // Relasi: Proyek dimiliki oleh satu User (Owner)

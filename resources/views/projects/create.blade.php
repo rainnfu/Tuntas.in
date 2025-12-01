@@ -1,83 +1,103 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-bold text-xl text-gray-800 leading-tight">
-            {{ __('Buat Proyek Baru') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-12 bg-gray-50 min-h-screen">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+    <div class="min-h-screen bg-[#F2F4F3] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans">
+        
+        <div class="bg-white w-full max-w-5xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[600px]">
             
-            <nav class="flex mb-4 text-sm text-gray-500">
-                <a href="{{ route('dashboard') }}" class="hover:text-blue-600 transition">Dashboard</a>
-                <span class="mx-2">/</span>
-                <span class="text-gray-800 font-medium">Buat Proyek</span>
-            </nav>
-
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-2xl border border-gray-100">
+            <div class="w-full md:w-2/5 bg-[#344E41] relative p-12 flex flex-col justify-between text-[#DAD7CD] overflow-hidden">
                 
-                <div class="bg-blue-600 p-6 sm:p-10 text-white relative overflow-hidden">
-                    <div class="relative z-10">
-                        <h3 class="text-2xl font-bold">Mulai Sesuatu yang Hebat</h3>
-                        <p class="text-blue-100 mt-2 text-sm">Buat ruang kerja baru untuk mengatur tugas dan kolaborasi tim Anda.</p>
-                    </div>
-                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl"></div>
-                    <div class="absolute bottom-0 left-0 -mb-4 -ml-4 w-24 h-24 bg-white opacity-10 rounded-full blur-2xl"></div>
+                <div class="absolute top-0 left-0 w-full h-full opacity-10" 
+                     style="background-image: radial-gradient(#588157 1px, transparent 1px); background-size: 20px 20px;"></div>
+                <div class="absolute -bottom-24 -right-24 w-64 h-64 bg-[#588157] rounded-full blur-3xl opacity-40"></div>
+
+                <div class="relative z-10">
+                    <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#A3B18A] hover:text-white transition mb-8">
+                        <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
+                    </a>
+                    <h2 class="text-4xl font-serif font-bold text-white leading-tight mb-4">
+                        Mulai Sesuatu <br> yang Besar.
+                    </h2>
+                    <p class="text-[#A3B18A] font-light leading-relaxed">
+                        Setiap gedung pencakar langit dimulai dari satu cetak biru. Definisikan visi proyek Anda di sini.
+                    </p>
                 </div>
 
-                <div class="p-6 sm:p-10">
-                    <form method="POST" action="{{ route('projects.store') }}">
-                        @csrf
-
-                        <div class="mb-6">
-                            <x-input-label for="name" class="text-gray-700 font-bold mb-2 flex items-center gap-2">
-                                <i class="fas fa-heading text-blue-500"></i> {{ __('Nama Proyek') }}
-                            </x-input-label>
-                            
-                            <x-text-input id="name" class="block mt-1 w-full px-4 py-3 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 transition shadow-sm" 
-                                          type="text" name="name" :value="old('name')" required autofocus placeholder="Contoh: Website Company Profile" />
-                            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                <div class="relative z-10 mt-12">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-[#588157]/20 flex items-center justify-center border border-[#588157]/50 text-white">
+                            <i class="fas fa-seedling text-xl"></i>
                         </div>
-
-                        <div class="mb-6">
-                            <x-input-label for="description" class="text-gray-700 font-bold mb-2 flex items-center gap-2">
-                                <i class="fas fa-align-left text-blue-500"></i> {{ __('Deskripsi Singkat') }} <span class="text-gray-400 font-normal text-xs">(Opsional)</span>
-                            </x-input-label>
-                            
-                            <textarea id="description" name="description" rows="3"
-                                      class="block mt-1 w-full px-4 py-3 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 transition shadow-sm resize-none"
-                                      placeholder="Jelaskan tujuan proyek ini...">{{ old('description') }}</textarea>
-                            <x-input-error :messages="$errors->get('description')" class="mt-2" />
+                        <div>
+                            <p class="text-sm font-bold text-white">Fase Inisiasi</p>
+                            <p class="text-xs text-[#A3B18A]">Langkah 1 dari Kesuksesan</p>
                         </div>
-
-                        <div class="mb-8">
-                            <x-input-label for="deadline" class="text-gray-700 font-bold mb-2 flex items-center gap-2">
-                                <i class="far fa-calendar-alt text-blue-500"></i> {{ __('Target Selesai (Deadline)') }} <span class="text-gray-400 font-normal text-xs">(Opsional)</span>
-                            </x-input-label>
-                            
-                            <div class="relative max-w-xs">
-                                <input type="date" id="deadline" name="deadline" 
-                                       class="block mt-1 w-full pl-10 px-4 py-3 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 transition shadow-sm text-gray-600"
-                                       value="{{ old('deadline') }}">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <i class="fas fa-calendar-day text-gray-400"></i>
-                                </div>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-2">Kami akan memberikan indikator warna jika proyek melewati tanggal ini.</p>
-                            <x-input-error :messages="$errors->get('deadline')" class="mt-2" />
-                        </div>
-
-                        <div class="flex items-center justify-end gap-4 border-t border-gray-100 pt-6">
-                            <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-gray-500 hover:text-gray-800 transition">
-                                Batal
-                            </a>
-                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transform transition hover:-translate-y-0.5 focus:ring-4 focus:ring-blue-200">
-                                <i class="fas fa-save mr-2"></i> Simpan Proyek
-                            </button>
-                        </div>
-                    </form>
+                    </div>
+                    <div class="h-1 w-full bg-[#588157]/30 rounded-full overflow-hidden">
+                        <div class="h-full w-1/4 bg-[#A3B18A]"></div>
+                    </div>
                 </div>
             </div>
+
+            <div class="w-full md:w-3/5 p-12 bg-white flex flex-col justify-center">
+                
+                <form method="POST" action="{{ route('projects.store') }}" class="space-y-8">
+                    @csrf
+
+                    <div class="group">
+                        <label for="name" class="block text-xs font-bold text-[#344E41] uppercase tracking-wider mb-2 ml-1">Nama Proyek</label>
+                        <div class="relative transition-all duration-300 transform group-focus-within:scale-[1.01]">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#A3B18A] group-focus-within:text-[#588157]">
+                                <i class="fas fa-heading"></i>
+                            </div>
+                            <input type="text" name="name" id="name" :value="old('name')" required autofocus
+                                   class="block w-full pl-11 pr-4 py-4 bg-[#F2F4F3] border-transparent focus:border-[#588157] rounded-xl focus:bg-white focus:ring-0 text-[#344E41] font-bold text-lg placeholder-[#A3B18A]/50 transition-all shadow-inner"
+                                   placeholder="Misal: Redesign Website 2025">
+                        </div>
+                        <x-input-error :messages="$errors->get('name')" class="mt-2 text-xs text-red-500 font-bold" />
+                    </div>
+
+                    <div class="group">
+                        <label for="description" class="block text-xs font-bold text-[#344E41] uppercase tracking-wider mb-2 ml-1">Deskripsi Singkat</label>
+                        <div class="relative transition-all duration-300 transform group-focus-within:scale-[1.01]">
+                            <div class="absolute top-4 left-4 pointer-events-none text-[#A3B18A] group-focus-within:text-[#588157]">
+                                <i class="fas fa-align-left"></i>
+                            </div>
+                            <textarea name="description" id="description" rows="3"
+                                      class="block w-full pl-11 pr-4 py-4 bg-[#F2F4F3] border-transparent focus:border-[#588157] rounded-xl focus:bg-white focus:ring-0 text-[#344E41] text-sm placeholder-[#A3B18A]/50 transition-all shadow-inner resize-none"
+                                      placeholder="Apa tujuan utama proyek ini?">{{ old('description') }}</textarea>
+                        </div>
+                        <x-input-error :messages="$errors->get('description')" class="mt-2" />
+                    </div>
+
+                    <div class="group">
+                        <label for="deadline" class="block text-xs font-bold text-[#344E41] uppercase tracking-wider mb-2 ml-1">Target Deadline</label>
+                        <div class="relative transition-all duration-300 transform group-focus-within:scale-[1.01]">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#A3B18A] group-focus-within:text-[#588157]">
+                                <i class="far fa-clock"></i>
+                            </div>
+                            <input type="datetime-local" name="deadline" id="deadline"
+                                   value="{{ old('deadline') }}"
+                                   class="block w-full pl-11 pr-4 py-4 bg-[#F2F4F3] border-transparent focus:border-[#588157] rounded-xl focus:bg-white focus:ring-0 text-[#344E41] font-bold text-sm placeholder-[#A3B18A]/50 transition-all shadow-inner cursor-pointer">
+                        </div>
+                        <p class="text-[10px] text-[#A3B18A] mt-2 ml-1 flex items-center gap-1">
+                            <i class="fas fa-info-circle"></i> Opsional. Masukkan jam untuk presisi.
+                        </p>
+                        <x-input-error :messages="$errors->get('deadline')" class="mt-2" />
+                    </div>
+
+                    <div class="pt-4 flex items-center justify-end gap-4">
+                        <a href="{{ route('dashboard') }}" class="text-sm font-bold text-[#A3B18A] hover:text-[#344E41] transition px-4 py-2">
+                            Batal
+                        </a>
+                        <button type="submit" 
+                                class="group bg-[#344E41] hover:bg-[#2A3E34] text-white px-8 py-3.5 rounded-xl font-bold shadow-lg shadow-[#344E41]/30 transform transition-all hover:-translate-y-1 flex items-center gap-2">
+                            <span>Buat Proyek</span>
+                            <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
         </div>
     </div>
 </x-app-layout>

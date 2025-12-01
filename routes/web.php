@@ -59,6 +59,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
     Route::get('/projects/{project}/logs', [ProjectController::class, 'logs'])->name('projects.logs');
+
+    Route::post('/projects/{project}/tasks', [TaskController::class, 'storeGlobal'])->name('projects.tasks.store');
+
+    // Tambahkan di dalam group auth
+    Route::post('/projects/reorder', [ProjectController::class, 'reorder'])->name('projects.reorder');
 });
 
 require __DIR__.'/auth.php';
