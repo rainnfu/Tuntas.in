@@ -10,12 +10,12 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::table('users', function (Blueprint $table) {
-        // UBAH 'after("avatar")' MENJADI 'after("email")'
-        $table->json('project_order')->nullable()->after('email'); 
-    });
-}
+    {
+        Schema::table('users', function (Blueprint $table) {
+            //
+        });
+    }
+
     /**
      * Reverse the migrations.
      */

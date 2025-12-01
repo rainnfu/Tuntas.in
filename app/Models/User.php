@@ -53,18 +53,21 @@ class User extends Authenticatable
         return $this->belongsToMany(Task::class, 'task_user');
 
     }
-    // Akses URL Avatar (Random Deterministik)
-    public function getAvatarUrlAttribute()
+   
+public function getAvatarUrlAttribute()
     {
-        // Total gambar yang Anda punya di folder public/assets/avatars/
-        // Pastikan nama filenya 1.png, 2.png, dst.
-        $totalAssets = 5; 
+        // 1. Jika user sudah memilih avatar (tersimpan di DB, misal '3.png')
+        if ($this->avatar) {
+            // Cek apakah string di DB mengandung ekstensi. Jika tidak, tambahkan .jpg
+            $filename = str_contains($this->avatar, '.') ? $this->avatar : $this->avatar . '.jpg';
+            return asset('assets/avatars/' . $filename);
+        }
 
-        // Rumus: (ID User % Total Aset) + 1
-        // Contoh: ID 1 dapat gambar 2. ID 11 dapat gambar 4.
-        // Ini memastikan user yang sama SELALU dapat gambar yang sama.
+        // 2. Fallback: Pilihkan random berdasarkan ID
+        $totalAssets = 5; 
         $index = ($this->id % $totalAssets) + 1;
 
+        // PENTING: Ganti ke .jpg sesuai file aset Anda
         return asset("assets/avatars/{$index}.jpg");
     }
 }

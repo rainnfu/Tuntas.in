@@ -31,6 +31,10 @@ class ProfileController extends Controller
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
         }
+        // Kita ambil input bernama 'avatar_option' dari form
+        if ($request->filled('avatar_option')) {
+            $request->user()->avatar = $request->input('avatar_option');
+        }
 
         $request->user()->save();
 

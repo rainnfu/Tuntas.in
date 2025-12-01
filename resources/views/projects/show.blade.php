@@ -297,7 +297,7 @@
                         <div class="space-y-4 mb-6 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                             <template x-for="comment in currentTask.comments" :key="comment.id">
                                 <div class="flex gap-4">
-                                    <img :src="comment.user.avatar_url ? comment.user.avatar_url : '{{ asset('assets/avatars/1.png') }}'" class="w-8 h-8 rounded-full object-cover shadow-sm">
+                                    <img :src="comment.user.avatar_url ? comment.user.avatar_url : '{{ asset('assets/avatars/1.jpg') }}'" class="w-8 h-8 rounded-full object-cover shadow-sm">
                                     <div class="flex-1">
                                         <div class="font-bold text-xs text-[#344E41]" x-text="comment.user.name"></div>
                                         <div class="text-sm text-[#5F6F65] bg-[#F2F4F3] p-3 rounded-r-xl rounded-bl-xl mt-1 leading-relaxed" x-text="comment.body"></div>
@@ -432,7 +432,7 @@
                     addComment() {
                         if(!this.newComment) return;
                         fetch(`/tasks/${this.currentTask.id}/comments`, { method: 'POST', headers: {'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')}, body: JSON.stringify({ body: this.newComment }) }).then(res => res.json()).then(data => {
-                            if(!data.user.avatar_url) data.user.avatar_url = "{{ asset('assets/avatars/1.png') }}";
+                            if(!data.user.avatar_url) data.user.avatar_url = "{{ asset('assets/avatars/1.jpg') }}";
                             this.currentTask.comments.push({ id: Date.now(), body: data.body, user: data.user });
                             this.newComment = '';
                         });

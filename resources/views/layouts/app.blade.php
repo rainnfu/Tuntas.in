@@ -78,16 +78,27 @@
                     </form>
                 </nav>
 
-                <div class="p-6 bg-[#2d4438]">
+                <div class="p-6 bg-[#2d4438] border-t border-[#588157]/30 mt-auto">
                     <div class="flex items-center gap-4">
-                        <div class="relative">
-                            <img src="{{ Auth::user()->avatar_url }}" class="w-10 h-10 rounded-xl object-cover border-2 border-[#588157]">
+                        
+                        <div class="relative flex-shrink-0">
+                            <img src="{{ Auth::user()->avatar_url }}" 
+                                alt="{{ Auth::user()->name }}"
+                                class="w-10 h-10 rounded-xl object-cover border-2 border-[#588157] bg-white"
+                                onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=A3B18A&color=fff';">
+                            
                             <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-[#344E41]"></div>
                         </div>
+
                         <div class="overflow-hidden">
-                            <h4 class="text-sm font-bold text-white truncate">{{ Auth::user()->name }}</h4>
-                            <p class="text-[10px] text-[#A3B18A] truncate uppercase tracking-wider font-bold">Online</p>
+                            <h4 class="text-sm font-bold text-white truncate leading-tight">
+                                {{ Auth::user()->name }}
+                            </h4>
+                            <p class="text-[10px] text-[#A3B18A] truncate uppercase tracking-wider font-bold mt-0.5">
+                                Online
+                            </p>
                         </div>
+                        
                     </div>
                 </div>
             </aside>
