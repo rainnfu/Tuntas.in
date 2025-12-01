@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use App\Models\ProjectList;
 use Illuminate\Http\Request;
+use App\Models\ActivityLog; 
+use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
@@ -30,17 +32,32 @@ class TaskController extends Controller
             'project_list_id' => 'required|exists:project_lists,id',
         ]);
 
-        // Update List ID (Pindah Kolom)
+        // 1. Simpan nama list lama SEBELUM update
+        $oldListName = $task->list->name;
+
+        // 2. Update Data
         $task->update([
             'project_list_id' => $request->project_list_id
         ]);
 
-        // Cek apakah tugas dipindah ke kolom "Done" (atau list terakhir)
-        // Ini nanti tempat kita menaruh TRIGGER WHATSAPP!
-        // if ($task->list->name == 'Done') { ... }
+        // 3. Ambil nama list baru SETELAH update
+        // (Kita perlu query ulang list baru untuk dapat namanya)
+        $newListName = \App\Models\ProjectList::find($request->project_list_id)->name;
+
+        // 4. --- LOGIKA LOGGING (PASTIKAN INI ADA) ---
+        if ($oldListName !== $newListName) {
+            \App\Models\ActivityLog::create([
+                'project_id' => $task->list->project_id, // Pastikan project_id benar
+                'user_id' => auth()->id(),
+                'action' => 'move',
+                'description' => auth()->user()->name . " memindahkan '{$task->title}' ke {$newListName}",
+            ]);
+        }
+        // -------------------------------------------
 
         return response()->json(['message' => 'Task moved successfully']);
     }
+
 
     // 1. Ambil Detail Tugas (API untuk Modal)
     public function show(Task $task)
@@ -57,9 +74,12 @@ class TaskController extends Controller
     // 2. Update Deskripsi Tugas
     public function update(Request $request, Task $task)
     {
-        $request->validate(['description' => 'nullable|string']);
+        $request->validate([
+            'description' => 'nullable|string',
+            'due_date'    => 'nullable|date',
+        ]);
         
-        $task->update(['description' => $request->description]);
+        $task->update($request->only('description', 'due_date'));
 
         return response()->json(['message' => 'Deskripsi diperbarui']);
     }

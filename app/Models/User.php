@@ -49,5 +49,20 @@ class User extends Authenticatable
     public function tasks()
     {
         return $this->belongsToMany(Task::class, 'task_user');
+
+    }
+    // Akses URL Avatar (Random Deterministik)
+    public function getAvatarUrlAttribute()
+    {
+        // Total gambar yang Anda punya di folder public/assets/avatars/
+        // Pastikan nama filenya 1.png, 2.png, dst.
+        $totalAssets = 5; 
+
+        // Rumus: (ID User % Total Aset) + 1
+        // Contoh: ID 1 dapat gambar 2. ID 11 dapat gambar 4.
+        // Ini memastikan user yang sama SELALU dapat gambar yang sama.
+        $index = ($this->id % $totalAssets) + 1;
+
+        return asset("assets/avatars/{$index}.jpg");
     }
 }

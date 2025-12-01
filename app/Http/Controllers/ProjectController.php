@@ -39,6 +39,7 @@ class ProjectController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'deadline' => 'nullable|date',
         ]);
 
         // Simpan Proyek ke Database
@@ -46,6 +47,7 @@ class ProjectController extends Controller
         $project = Auth::user()->ownedProjects()->create([
             'name' => $request->name,
             'description' => $request->description,
+            'deadline' => $request->deadline,
         ]);
 
         // FITUR OTOMATIS: Buat 3 List Default (To Do, In Progress, Done)
@@ -95,9 +97,10 @@ class ProjectController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'deadline' => 'nullable|date',
         ]);
 
-        $project->update($request->only('name', 'description'));
+        $project->update($request->only('name', 'description', 'deadline'));
 
         return redirect()->route('dashboard')->with('success', 'Proyek berhasil diperbarui!');
     }
@@ -113,5 +116,32 @@ class ProjectController extends Controller
         $project->delete(); // Ini akan otomatis menghapus list & tasks karena 'onDelete cascade' di migrasi
 
         return redirect()->route('dashboard')->with('success', 'Proyek telah dihapus.');
+    }
+
+    // Method untuk mengambil Log Aktivitas (AJAX)
+    public function logs(Project $project)
+    {
+        // Pastikan user adalah anggota/owner
+        if ($project->owner_id !== Auth::id() && !$project->members->contains(Auth::id())) {
+            abort(403);
+        }
+
+        // Ambil 50 log terakhir
+        $logs = \App\Models\ActivityLog::where('project_id', $project->id)
+                    ->with('user') // Eager load user
+                    ->latest()
+                    ->take(50)
+                    ->get()
+                    ->map(function ($log) {
+                        return [
+                            'user_name' => $log->user->name,
+                            'avatar_url' => $log->user->avatar_url, // Pakai accessor yang dibuat B
+                            'description' => $log->description,
+                            'created_at' => $log->created_at->diffForHumans(),
+                            'action' => $log->action
+                        ];
+                    });
+
+        return response()->json($logs);
     }
 }

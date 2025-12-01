@@ -18,6 +18,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Ubah route dashboard default menjadi ke ProjectController
     Route::get('/dashboard', [ProjectController::class, 'index'])->name('dashboard');
     
+    Route::get('/projects', function () {
+        return redirect()->route('dashboard');
+    });
+    
     // Route untuk Membuat & Menyimpan Proyek
     Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
@@ -53,6 +57,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Delete Task
     Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+
+    Route::get('/projects/{project}/logs', [ProjectController::class, 'logs'])->name('projects.logs');
 });
 
 require __DIR__.'/auth.php';

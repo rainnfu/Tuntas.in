@@ -21,6 +21,12 @@
                             <x-input-label for="description" :value="__('Deskripsi Singkat')" />
                             <textarea id="description" name="description" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm" rows="3">{{ $project->description }}</textarea>
                         </div>
+                        <div class="mb-4">
+                            <x-input-label for="deadline" :value="__('Target Selesai (Deadline)')" />
+                            <input type="date" id="deadline" name="deadline" 
+                                value="{{ old('deadline', $project->deadline ? $project->deadline->format('Y-m-d') : '') }}"
+                                class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                        </div>
 
                         <div class="flex items-center justify-end mt-4 gap-2">
                             <a href="{{ route('dashboard') }}" class="text-gray-500 hover:underline">Batal</a>

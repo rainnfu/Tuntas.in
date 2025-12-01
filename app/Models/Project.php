@@ -9,7 +9,11 @@ class Project extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'owner_id'];
+    protected $fillable = ['name', 'description', 'owner_id', 'deadline'];
+
+    protected $casts = [
+        'deadline' => 'date',
+    ];
 
     // Relasi: Proyek dimiliki oleh satu User (Owner)
     public function owner()
