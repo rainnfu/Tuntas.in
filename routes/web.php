@@ -1,9 +1,11 @@
 <?php
 
+use App\Services\WhatsAppService;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProjectMemberController; 
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -64,6 +66,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Tambahkan di dalam group auth
     Route::post('/projects/reorder', [ProjectController::class, 'reorder'])->name('projects.reorder');
+});
+
+// Route Khusus Admin
+Route::middleware(['auth', 'verified', 'admin'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
+});
+
+ // Jangan lupa ini
+
+Route::get('/test-wa', function () {
+    // Panggil menggunakan path lengkap (Backslash di depan App)
+    $wa = new \App\Services\WhatsAppService(); 
+    
+    // Ganti nomor HP Anda disini (Format 08xx atau 62xx)
+    $target = '085935026994'; 
+    
+    $result = $wa->sendMessage($target, "Halo! Ini tes dari Laravel Tuntas.in via Fonnte 🚀");
+    
+    return $result ? "BERHASIL!" : "GAGAL.";
 });
 
 require __DIR__.'/auth.php';
